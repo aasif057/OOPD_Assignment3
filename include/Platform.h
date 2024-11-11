@@ -1,31 +1,33 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
+// Base Platform class
 class Platform {
 public:
-    virtual ~Platform() = default;
-    virtual int getStoppageInterval() const = 0;  // Pure virtual function
+    // Pure virtual function to get stoppage interval
+    virtual int getStoppageInterval() const = 0;
+    
+    // Pure virtual function to set stoppage interval
     virtual void setStoppageInterval(int interval) = 0;
+    
+    // Virtual destructor
+    virtual ~Platform() {}
 };
 
+// Derived StoppagePlatform class (can accommodate stoppages)
 class StoppagePlatform : public Platform {
-private:
-    int stoppageInterval;
-
 public:
+    // Constructor taking stoppage interval as argument
     StoppagePlatform(int interval);
-    int getStoppageInterval() const override;
-    void setStoppageInterval(int interval) override;
-};
 
-class ThroughPlatform : public Platform {
+    // Overridden function to get stoppage interval
+    int getStoppageInterval() const override;
+
+    // Overridden function to set stoppage interval
+    void setStoppageInterval(int interval) override;
+
 private:
-    int stoppageInterval;
-
-public:
-    ThroughPlatform(int interval = 10);  // Through trains have a default 10-minute interval
-    int getStoppageInterval() const override;
-    void setStoppageInterval(int interval) override;
+    int stoppageInterval;  // Stores the stoppage interval
 };
 
 #endif
