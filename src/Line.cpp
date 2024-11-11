@@ -1,20 +1,19 @@
 #include "Line.h"
-#include "Platform.h"
-#include <iostream>
-#include <stdexcept>
+#include <stdexcept>  // Include this for std::invalid_argument
 
-Line::Line(Platform* plat) : platform(plat) {}
+// Constructor initializes platform pointer
+Line::Line(Platform* platform) : platform(platform) {}
 
-void Line::addTrainTiming(int time) {
-    if (time % platform->getStoppageInterval() != 0) {
+// Add a train timing to the trainTimings vector
+void Line::addTrainTiming(int timing) {
+    int interval = platform->getStoppageInterval();
+    if (timing % interval != 0) {
         throw std::invalid_argument("Train timing does not comply with platform stoppage interval.");
     }
-    trainTimings.push_back(time);
+    trainTimings.push_back(timing);  // Add valid timing to the vector
 }
 
-void Line::showTrainTimings() const {
-    std::cout << "Train timings on this line:" << std::endl;
-    for (int time : trainTimings) {
-        std::cout << "Train at: " << time << " minutes" << std::endl;
-    }
+// Return all train timings
+std::vector<int> Line::getTrainTimings() const {
+    return trainTimings;
 }
