@@ -4,5 +4,6 @@
 *.log
 *.tmp
 *.swp
+*.so
 
 .vscode
