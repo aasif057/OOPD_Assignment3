@@ -23,6 +23,6 @@ program2: program2.o
 program2.o: program2.cpp
 	$(CXX) $(CXXFLAGS) -c program2.cpp
 
-# Clean up all generated files
+# Clean up all generated files including example.db
 clean:
-	rm -f program1 program1.o program2 program2.o
+	rm -f program1 program1.o program2 program2.o example.db
