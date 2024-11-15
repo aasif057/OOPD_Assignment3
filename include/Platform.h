@@ -7,9 +7,6 @@ public:
     // Pure virtual function to get stoppage interval
     virtual int getStoppageInterval() const = 0;
     
-    // Pure virtual function to set stoppage interval
-    virtual void setStoppageInterval(int interval) = 0;
-    
     // Virtual destructor
     virtual ~Platform() {}
 };
@@ -17,17 +14,15 @@ public:
 // Derived StoppagePlatform class (can accommodate stoppages)
 class StoppagePlatform : public Platform {
 public:
-    // Constructor taking stoppage interval as argument
-    StoppagePlatform(int interval);
+    StoppagePlatform();  // Default constructor
+    int getStoppageInterval() const override;  // 30 minutes stoppage interval
+};
 
-    // Overridden function to get stoppage interval
-    int getStoppageInterval() const override;
-
-    // Overridden function to set stoppage interval
-    void setStoppageInterval(int interval) override;
-
-private:
-    int stoppageInterval;  // Stores the stoppage interval
+// Derived ThroughPlatform class (can accommodate through trains)
+class ThroughPlatform : public Platform {
+public:
+    ThroughPlatform();  // Default constructor
+    int getStoppageInterval() const override;  // 10 minutes through train interval
 };
 
 #endif
