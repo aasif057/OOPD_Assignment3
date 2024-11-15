@@ -2,32 +2,90 @@
 #include "Line.h"
 #include "Station.h"
 #include <iostream>
+#include <limits>
+#include <stdexcept>
+#include <sstream>
 
 int main() {
-    // Create two platforms with different stoppage intervals
-    StoppagePlatform p1(30);  // Platform allowing stoppage every 30 minutes
-    StoppagePlatform p2(10);  // Platform allowing through trains every 10 minutes
-
-    // Create lines with associated platforms
-    Line line1(&p1);  // Line 1 with platform p1
-    Line line2(&p2);  // Line 2 with platform p2
-
-    // Add train timings (this should be valid as per the stoppage intervals)
     try {
-        line1.addTrainTiming(30);  // Should be valid
-        line2.addTrainTiming(10);  // Should be valid
-        line1.addTrainTiming(35);  // This should throw an error, as it's invalid
-    } catch (const std::invalid_argument& e) {
-        std::cout << "Error: " << e.what() << std::endl;
+        // Input Station ID
+        std::cout << "Enter Station ID (integer or string): ";
+        std::string stationID;
+        std::cin >> stationID;
+
+        Station<std::string> station(stationID); // Use std::string as Station ID
+
+        // Input number of lines
+        int numLines;
+        std::cout << "Enter the number of lines for the station: ";
+        std::cin >> numLines;
+
+        for (int i = 0; i < numLines; ++i) {
+            std::cout << "Configuring Line " << i + 1 << std::endl;
+
+            // Choose platform type for the line
+            int platformChoice;
+            std::cout << "Choose platform type for Line " << i + 1
+                      << " (1 for Stoppage, 2 for Through): ";
+            std::cin >> platformChoice;
+
+            Platform* platform;
+            if (platformChoice == 1) {
+                platform = new StoppagePlatform(30); // Stoppage every 30 minutes
+            } else if (platformChoice == 2) {
+                platform = new ThroughPlatform(); // Through every 10 minutes
+            } else {
+                std::cerr << "Invalid platform type. Exiting program." << std::endl;
+                return 1;
+            }
+
+            Line line(platform, platformChoice == 2); // Create the line with the platform
+
+            // Input train timings for the line
+            int numTimings;
+            std::cout << "Enter the number of train timings for Line " << i + 1 << ": ";
+            std::cin >> numTimings;
+
+            std::cout << "Enter the train timings in hh:mm format:" << std::endl;
+            for (int j = 0; j < numTimings; ++j) {
+                while (true) {
+                    std::string timeInput;
+                    std::cout << "Timing " << j + 1 << ": ";
+                    std::cin >> timeInput;
+
+                    try {
+                        // Parse input as hh:mm
+                        std::stringstream ss(timeInput);
+                        int hours, minutes;
+                        char colon;
+
+                        ss >> hours >> colon >> minutes;
+
+                        // Validate parsing success
+                        if (ss.fail() || colon != ':' || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+                            throw std::invalid_argument("Invalid time format. Please use hh:mm (24-hour format).");
+                        }
+
+                        // Add the timing
+                        line.addTrainTiming(hours, minutes);
+                        break; // Exit loop on success
+
+                    } catch (const std::invalid_argument& e) {
+                        std::cout << "Error: " << e.what() << " Try again." << std::endl;
+                    }
+                }
+            }
+
+            // Add the line to the station
+            station.addLine(line);
+        }
+
+        // Show station details
+        station.showDetails();
+
+    } catch (const std::exception& e) {
+        std::cerr << "An error occurred: " << e.what() << std::endl;
     }
-
-    // Create a station and add lines
-    Station<int> station(101);  // Using integer ID for the station
-    station.addLine(line1);
-    station.addLine(line2);
-
-    // Show station details
-    station.showDetails();
 
     return 0;
 }

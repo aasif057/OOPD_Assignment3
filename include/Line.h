@@ -3,16 +3,20 @@
 
 #include "Platform.h"
 #include <vector>
+#include <stdexcept>
+#include <algorithm>
 
 class Line {
 public:
-    Line(Platform* platform);  // Constructor accepts a platform pointer
-    void addTrainTiming(int timing);  // Add train timing
-    std::vector<int> getTrainTimings() const;  // Get all train timings
-
+    Line(Platform* platform, bool isThroughLine);
+    
+    void addTrainTiming(int hours, int minutes);
+    void showTrainTimings() const;
+    
 private:
-    Platform* platform;  // Pointer to the associated platform
-    std::vector<int> trainTimings;  // Vector to store train timings
+    Platform* platform;  // Each line corresponds to a single platform
+    bool isThroughLine;  // Indicates whether this is a through train line
+    std::vector<int> trainTimings;  // Stores timings in minutes since midnight
 };
 
 #endif

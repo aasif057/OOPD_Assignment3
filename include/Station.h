@@ -9,13 +9,13 @@
 template <typename T>
 class Station {
 public:
-    Station(T id);  // Constructor that accepts a station ID
-    void addLine(const Line& line);  // Add a line to the station
-    void showDetails() const;  // Show details of the station
+    Station(T id);
+    void addLine(const Line& line);  
+    void showDetails() const;
 
 private:
-    T id;  // Station ID (can be int or string)
-    std::vector<Line> lines;  // Vector to store lines
+    T id;  // Station ID, can be int or string
+    std::vector<Line> lines;  // List of lines associated with the station
 };
 
 #endif

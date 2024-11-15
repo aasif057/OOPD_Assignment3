@@ -1,19 +1,33 @@
 #include "Line.h"
-#include <stdexcept>  // Include this for std::invalid_argument
+#include <iostream>
+#include <algorithm>
 
-// Constructor initializes platform pointer
-Line::Line(Platform* platform) : platform(platform) {}
+Line::Line(Platform* platform, bool isThroughLine) : platform(platform), isThroughLine(isThroughLine) {}
 
-// Add a train timing to the trainTimings vector
-void Line::addTrainTiming(int timing) {
-    int interval = platform->getStoppageInterval();
-    if (timing % interval != 0) {
+void Line::addTrainTiming(int hours, int minutes) {
+    int timingInMinutes = hours * 60 + minutes;
+
+    // Check for duplicate timings
+    if (std::find(trainTimings.begin(), trainTimings.end(), timingInMinutes) != trainTimings.end()) {
+        throw std::invalid_argument("Train timing already exists for this line.");
+    }
+
+    // Check the stoppage interval
+    if (timingInMinutes % platform->getStoppageInterval() != 0) {
         throw std::invalid_argument("Train timing does not comply with platform stoppage interval.");
     }
-    trainTimings.push_back(timing);  // Add valid timing to the vector
+
+    // Add valid timing
+    trainTimings.push_back(timingInMinutes);
 }
 
-// Return all train timings
-std::vector<int> Line::getTrainTimings() const {
-    return trainTimings;
+void Line::showTrainTimings() const {
+    std::cout << "Platform Type: " << (isThroughLine ? "Through" : "Stoppage") << std::endl;
+    std::cout << "Train timings: ";
+    for (const auto& timing : trainTimings) {
+        int hours = timing / 60;
+        int minutes = timing % 60;
+        std::cout << hours << ":" << (minutes < 10 ? "0" : "") << minutes << " ";
+    }
+    std::cout << std::endl;
 }
